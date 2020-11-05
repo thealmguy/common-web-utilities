@@ -6,7 +6,7 @@ variables:
   buildConfiguration: 'Release'
   version.Major: '1'
   version.Minor: '0'
-  version.MajorMinor: '$(version.Major).$(version.Minor)'
+  version.MajorMinor: '1.0'
   version.Patch: $[counter(variables['version.MajorMinor'], 0)]
   version.Full: '$(version.Major).$(version.Minor).$(version.Patch)'
 
