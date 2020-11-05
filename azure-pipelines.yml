@@ -31,11 +31,9 @@ stages:
                 majorVersion: '$(version.Major)'
                 minorVersion: '$(version.Minor)'
                 patchVersion: '$(version.Patch)'
-          - task: NuGetAuthenticate@0
-            inputs:
-              nuGetServiceConnections: 'Nuget.org'
           - task: NuGetCommand@2
             displayName: 'NuGet push'
             inputs:
               command: push
               nuGetFeedType: external
+              publishFeedCredentials: 'Nuget.org'
