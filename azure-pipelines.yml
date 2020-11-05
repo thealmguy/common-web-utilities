@@ -10,6 +10,7 @@ variables:
   version.Patch: $[counter(variables['version.MajorMinor'], 0)]
   version.Full: '$(version.Major).$(version.Minor).$(version.Patch)'
 
+
 stages:
   - stage: Build
     jobs:
