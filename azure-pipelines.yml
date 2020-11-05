@@ -22,7 +22,7 @@ stages:
           - task: DotNetCoreCLI@2
             inputs:
               command: build
-              projects: '**/*.sln'
+              projects: './CMCS.Common.WebUtilities/CMCS.Common.WebUtilities.csproj'
               arguments: '--configuration $(BuildConfiguration) /p:Version=$(versionFull)'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet pack $(buildConfiguration)'
@@ -30,9 +30,9 @@ stages:
                 command: pack
                 versioningScheme: byEnvVar
                 versionEnvVar: versionFull
-          - task: NuGetCommand@2
-            displayName: 'NuGet push'
-            inputs:
-              command: push
-              nuGetFeedType: external
-              publishFeedCredentials: 'Nuget.org'
+          # - task: NuGetCommand@2
+          #   displayName: 'NuGet push'
+          #   inputs:
+          #     command: push
+          #     nuGetFeedType: external
+          #     publishFeedCredentials: 'Nuget.org'

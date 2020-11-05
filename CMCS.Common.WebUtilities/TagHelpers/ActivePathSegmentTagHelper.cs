@@ -23,8 +23,6 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             _actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
         }
 
-        private IDictionary<string, string> _routeValues;
-
         [HtmlAttributeName("asp-part-path-match")]
         public bool FuzzySegmentMatch { get; set; }
 
@@ -69,7 +67,9 @@ namespace CMCS.Common.WebUtilities.TagHelpers
         private bool ShouldBeActive()
         {
             var routes = _actionDescriptorCollectionProvider.ActionDescriptors.Items.Where(ad => ad.AttributeRouteInfo != null).Select(ad => new RouteInformation(ad)).ToList();
-            
+
+            bool isMatch = false;
+
             if (FuzzySegmentMatch)
             {              
                 var matchingRoutes = new List<RouteInformation>();
@@ -78,15 +78,18 @@ namespace CMCS.Common.WebUtilities.TagHelpers
                 {
                     for (int i = 1; i < pathSegments.Length; i++)
                     {
-                        matchingRoutes = routes.Where(r => r.Template == ConstructUrl(pathSegments, i)).ToList();
+                        matchingRoutes.AddRange(routes.Where(r => r.Template == ConstructUrl(pathSegments, i)).ToList());
                     }
                 }
-                return matchingRoutes.Any(r => r.Area == Area && r.Controller == Controller && r.Action == Action);
+                isMatch =  matchingRoutes.Any(r => r.Area == Area && r.Controller == Controller && r.Action == Action);
             }
+
+            if (isMatch)
+                return true;
             else
             {
                 var route = routes.SingleOrDefault(r => r.Template == _contextAccessor.HttpContext.Request.Path.ToString().Substring(1));
-                return route != null && route.Area == Area && route.Controller == Controller && route.Action == Action;            
+                return route != null && route.Area == Area && route.Controller == Controller && route.Action == Action;
             }       
         }
 
