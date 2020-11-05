@@ -37,5 +37,5 @@ stages:
             displayName: 'NuGet push'
             inputs:
               command: push
-              publishVstsFeed: 'Common/CMCS.Common'
+              publishVstsFeed: 'CMCS.Common'
               allowPackageConflicts: true
