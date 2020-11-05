@@ -28,7 +28,14 @@ stages:
             displayName: 'dotnet pack $(buildConfiguration)'
             inputs:
                 command: pack
-                versioningScheme: byPrereleaseNumber
                 majorVersion: '$(version.Major)'
                 minorVersion: '$(version.Minor)'
                 patchVersion: '$(version.Patch)'
+          - task: NuGetAuthenticate@0
+            displayName: 'NuGet Authenticate'
+          - task: NuGetCommand@2
+            displayName: 'NuGet push'
+            inputs:
+              command: push
+              publishVstsFeed: 'Common/CMCS.Common'
+              allowPackageConflicts: true
