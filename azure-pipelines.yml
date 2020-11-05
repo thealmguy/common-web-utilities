@@ -6,6 +6,7 @@ variables:
   buildConfiguration: 'Release'
   major: '1'
   minor: '0'
+  version: '$(major).$(minor).$(Rev:r)'
 
 stages:
   - stage: Build
@@ -20,7 +21,7 @@ stages:
             inputs:
               command: build
               projects: '**/*.sln'
-              arguments: '--configuration $(BuildConfiguration) /p:Version=$(major).$(minor).$(rev:.r)'
+              arguments: '--configuration $(BuildConfiguration) /p:Version=$(version)'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet pack $(buildConfiguration)'
             inputs:
@@ -28,4 +29,4 @@ stages:
                 versioningScheme: byPrereleaseNumber
                 majorVersion: '$(major)'
                 minorVersion: '$(minor)'
-                patchVersion: '$(rev:.r)'
+                patchVersion: '$(Rev:r)'
