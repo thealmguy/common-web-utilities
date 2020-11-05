@@ -20,7 +20,7 @@ stages:
             inputs:
               command: build
               projects: '**/*.sln'
-              arguments: '--configuration $(BuildConfiguration) /p:Version=$(Build.BuildNumber)'
+              arguments: '--configuration $(BuildConfiguration) /p:Version=$(major).$(minor).$(rev:.r)'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet pack $(buildConfiguration)'
             inputs:
