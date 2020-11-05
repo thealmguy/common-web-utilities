@@ -32,10 +32,10 @@ stages:
                 minorVersion: '$(version.Minor)'
                 patchVersion: '$(version.Patch)'
           - task: NuGetAuthenticate@0
-            displayName: 'NuGet Authenticate'
+            inputs:
+              nuGetServiceConnections: 'Nuget.org'
           - task: NuGetCommand@2
             displayName: 'NuGet push'
             inputs:
               command: push
-              publishVstsFeed: 'CMCS.Common'
-              allowPackageConflicts: true
+              nuGetFeedType: external
