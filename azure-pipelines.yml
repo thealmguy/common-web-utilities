@@ -30,9 +30,9 @@ stages:
                 command: pack
                 versioningScheme: byEnvVar
                 versionEnvVar: versionFull
-          # - task: NuGetCommand@2
-          #   displayName: 'NuGet push'
-          #   inputs:
-          #     command: push
-          #     nuGetFeedType: external
-          #     publishFeedCredentials: 'Nuget.org'
+          - task: NuGetCommand@2
+            displayName: 'NuGet push'
+            inputs:
+              command: push
+              nuGetFeedType: external
+              publishFeedCredentials: 'Nuget.org'
