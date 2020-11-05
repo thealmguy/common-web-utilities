@@ -1,31 +1,31 @@
 trigger:
 - master
-
 pool:
   vmImage: 'ubuntu-latest'
-
 variables:
   buildConfiguration: 'Release'
+  major: '1'
+  minor: '0'
 
 stages:
   - stage: Build
-  jobs:
-    - job: BuildLibrary
-      displayName: 'Build Library'
-      continueOnError: false
-      workspace:
-        clean: all
-      steps:
-        - task: DotNetCoreCLI@2
-          inputs:
-            command: build
-            projects: '**/*.sln'
-            arguments: '--configuration $(BuildConfiguration) /p:Version=$(Build.BuildNumber)'
-        - task: DotNetCoreCLI@2
-          displayName: 'dotnet pack $(buildConfiguration)'
-          inputs:
-              command: pack
-              versioningScheme: byPrereleaseNumber
-              majorVersion: '$(Major)'
-              minorVersion: '$(Minor)'
-              patchVersion: '$(rev:.r)'
+    jobs:
+      - job: BuildLibrary
+        displayName: 'Build Library'
+        continueOnError: false
+        workspace:
+          clean: all
+        steps:
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: build
+              projects: '**/*.sln'
+              arguments: '--configuration $(BuildConfiguration) /p:Version=$(Build.BuildNumber)'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet pack $(buildConfiguration)'
+            inputs:
+                command: pack
+                versioningScheme: byPrereleaseNumber
+                majorVersion: '$(major)'
+                minorVersion: '$(minor)'
+                patchVersion: '$(rev:.r)'
