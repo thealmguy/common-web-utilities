@@ -28,7 +28,9 @@ stages:
             displayName: 'dotnet pack $(buildConfiguration)'
             inputs:
                 command: pack
-                arguments: '--no-build --configuration $(BuildConfiguration) /p:Version=$(versionFull)'
+                requestedMajorVersion: $(versionMajor)
+                requestedMinorVersion: $(versionMinor)
+                requestedPatchVersion: $(versionPatch)
           # - task: NuGetCommand@2
           #   displayName: 'NuGet push'
           #   inputs:
