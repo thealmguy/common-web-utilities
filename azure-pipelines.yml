@@ -4,10 +4,10 @@ pool:
   vmImage: 'ubuntu-latest'
 variables:
   buildConfiguration: 'Release'
-  version.Major: '1'
-  version.Minor: '0'
-  version.Patch: $[counter(format('{0}.{1}', variables['version.Major'], variables['version.Minor']), 0)]
-  version.Full: '$(version.Major).$(version.Minor).$(version.Patch)'
+  versionMajor: '1'
+  versionMinor: '0'
+  versionPatch: $[counter(format('{0}.{1}', variables['versionMajor'], variables['versionMinor']), 0)]
+  versionFull: '$(versionMajor).$(versionMinor).$(versionPatch)'
 
 
 stages:
@@ -23,14 +23,14 @@ stages:
             inputs:
               command: build
               projects: '**/*.sln'
-              arguments: '--configuration $(BuildConfiguration) /p:Version=$(version.Full)'
+              arguments: '--configuration $(BuildConfiguration) /p:Version=$(versionFull)'
           - task: DotNetCoreCLI@2
             displayName: 'dotnet pack $(buildConfiguration)'
             inputs:
                 command: pack
-                majorVersion: '$(version.Major)'
-                minorVersion: '$(version.Minor)'
-                patchVersion: '$(version.Patch)'
+                majorVersion: '$(versionMajor)'
+                minorVersion: '$(versionMinor)'
+                patchVersion: '$(versionPatch)'
           # - task: NuGetCommand@2
           #   displayName: 'NuGet push'
           #   inputs:
