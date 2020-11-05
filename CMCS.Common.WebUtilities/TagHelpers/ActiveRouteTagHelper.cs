@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace CMCS.Common.WebUtilities.TagHelpers
 {
-    [HtmlTargetElement("a", Attributes = "asp-is-active")]
+    [HtmlTargetElement("a", Attributes = "asp-is-active", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class ActiveRouteTagHelper : TagHelper
     {
         private readonly IHttpContextAccessor _contextAccessor;
@@ -23,9 +23,6 @@ namespace CMCS.Common.WebUtilities.TagHelpers
         }
 
         private IDictionary<string, string> _routeValues;
-
-        [HtmlAttributeName("asp-top-level-match")]
-        public bool TopLevelMatch { get; set; }
 
         [HtmlAttributeName("asp-area")]
         public string Area { get; set; }
@@ -70,40 +67,8 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             output.Attributes.RemoveAll("asp-is-active");
         }
 
-        private string ConstructUrl(string[] parts, int countToConstruct)
-        {
-            int counter = 0;
-            string ret = string.Empty;
-            while (counter < countToConstruct)
-            {
-                ret += parts[counter] + "/";
-                counter++;
-            }
-
-            ret = ret.Substring(0, ret.Length - 1);
-            return ret;
-        }
-
         private bool ShouldBeActive()
         {
-
-            if (TopLevelMatch)
-            {
-                var routes = _actionDescriptorCollectionProvider.ActionDescriptors.Items.Where(ad => ad.AttributeRouteInfo != null).Select(ad => new RouteInformation(ad)).ToList();
-                var matchingRoutes = new List<RouteInformation>();
-
-                var pathSegments = _contextAccessor.HttpContext.Request.Path.ToString().Substring(1).Split('/');
-                if (pathSegments.Length > 1)
-                {
-                    for (int i = 1; i < pathSegments.Length; i++)
-                    {
-                        var url = ConstructUrl(pathSegments, i);
-                        matchingRoutes = routes.Where(r => r.Template == url).ToList();
-                    }
-                }
-                return matchingRoutes.Any(r => r.Area == Area && r.Controller == Controller && r.Action == Action);             
-            }
-
             string currentArea = string.Empty;
             string currentController = string.Empty;
             string currentAction = string.Empty;
@@ -132,16 +97,14 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             if (Page != null)
             {
                 if (!string.IsNullOrWhiteSpace(Page) && Page.ToLower() != _contextAccessor.HttpContext.Request.Path.Value.ToLower())
-                    return false;
-                
+                    return false;               
             }
 
             foreach (KeyValuePair<string, string> routeValue in RouteValues)
             {
                 if (!ViewContext.RouteData.Values.ContainsKey(routeValue.Key) ||
                     ViewContext.RouteData.Values[routeValue.Key].ToString() != routeValue.Value)
-                    return false;
-                
+                    return false;               
             }
             return true;
         }
@@ -156,8 +119,7 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             }
             else if (classAttr.Value == null || classAttr.Value.ToString().IndexOf("active") < 0)
             {
-                output.Attributes.SetAttribute("class", classAttr.Value == null
-                    ? "active" : classAttr.Value.ToString() + " active");
+                output.Attributes.SetAttribute("class", classAttr.Value == null ? "active" : classAttr.Value.ToString() + " active");
             }
         }
     }
