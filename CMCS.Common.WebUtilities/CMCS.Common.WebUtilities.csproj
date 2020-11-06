@@ -9,6 +9,8 @@
     <Description>
       This library provides a set of useful helper classes for use when building asp.net core apps.
     </Description>
+    <PackageLicenseUrl>https://github.com/thealmguy/common-web-utilities/blob/main/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/thealmguy/common-web-utilities</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
