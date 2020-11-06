@@ -38,6 +38,10 @@ namespace CMCS.Common.WebUtilities.Objects
         public string Action { get; private set; }
 
 
+        public void SetTemplate(string template)
+        {
+            this.Template = template;
+        }
 
     }
 }

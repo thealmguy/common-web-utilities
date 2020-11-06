@@ -24,24 +24,67 @@ namespace CMCS.Common.Www.Controllers
             return View();
         }
 
+        #region "path segment example pages"
+
         [Route("foo")]
-        public IActionResult Privacy()
+        public IActionResult TopLevel()
         {
             return View();
         }
 
         [Route("foo/bar")]
-        public IActionResult Privacy2()
+        public IActionResult Secondary()
         {
             return View();
         }
 
-        [Route("foo/bar/lipsum")]
-        public IActionResult Privacy3()
+        [Route("foo/bar/ipsum")]
+        public IActionResult Tertiary()
         {
             return View();
         }
 
+        [Route("foo/bar/ipsum/lorem")]
+        public IActionResult Quadrtiaryyyy()
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region "route dictionary examples"
+
+        [Route("bar/{category}")]
+        public IActionResult Category(string category)
+        {
+            return View("Generic", category);
+        }
+
+        [Route("bar/{category}/{subCategory}")]
+        public IActionResult Subcategory(string category, string subCategory)
+        {
+            return View("Generic", $"{category} > {subCategory}");
+        }
+
+        [Route("bar/{category}/{subCategory}/{subSubCategory}")]
+        public IActionResult SubSubcategory(string category, string subCategory, string subSubCategory)
+        {
+            return View("Generic", $"{category} > {subCategory} > {subSubCategory}");
+        }
+
+        [Route("bar/{category}/{subCategory}/{subSubCategory}/{subSubSubCategory}")]
+        public IActionResult SubSubSubcategory(string category, string subCategory, string subSubCategory, string subSubSubCategory)
+        {
+            return View("Generic", $"{category} > {subCategory} > {subSubCategory} > {subSubSubCategory}");
+        }
+
+        [Route("bar/{category}/{subCategory}/{subSubCategory}/{subSubSubCategory}/{subSubSubSubCategory}")]
+        public IActionResult SubSubSubSubcategory(string category, string subCategory, string subSubCategory, string subSubSubCategory, string subSubSubSubCategory)
+        {
+            return View("Generic", $"{category} > {subCategory} > {subSubCategory} > {subSubSubCategory} > {subSubSubSubCategory}");
+        }
+
+        #endregion
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

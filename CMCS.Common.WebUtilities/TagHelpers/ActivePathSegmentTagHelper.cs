@@ -23,6 +23,8 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             _actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
         }
 
+        private IDictionary<string, string> _routeValues;
+
         [HtmlAttributeName("asp-part-path-match")]
         public bool FuzzySegmentMatch { get; set; }
 
@@ -34,6 +36,21 @@ namespace CMCS.Common.WebUtilities.TagHelpers
 
         [HtmlAttributeName("asp-controller")]
         public string Controller { get; set; }
+
+        [HtmlAttributeName("asp-all-route-data", DictionaryAttributePrefix = "asp-route-")]
+        public IDictionary<string, string> RouteValues
+        {
+            get
+            {
+                if (_routeValues == null)
+                    _routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                return _routeValues;
+            }
+            set
+            {
+                _routeValues = value;
+            }
+        }
 
         [HtmlAttributeNotBound]
         [ViewContext]
@@ -50,47 +67,58 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             output.Attributes.RemoveAll("asp-part-path-match");
         }
 
-        private string ConstructUrl(string[] parts, int countToConstruct)
+        private List<string> GetPossibleUrls()
         {
-            int counter = 0;
-            string ret = string.Empty;
-            while (counter < countToConstruct)
+            var path = _contextAccessor.HttpContext.Request.Path.ToString().Substring(1);
+            if (FuzzySegmentMatch)
             {
-                ret += parts[counter] + "/";
-                counter++;
+                var ret = new List<string>();
+                var pathSegments = path.Split("/");
+                for(int i = 0; i< pathSegments.Length; i++)
+                {
+                    var potentialPath = string.Empty;
+                    for(int pathSegment = 0; pathSegment <= i; pathSegment++)
+                    {
+                        potentialPath = pathSegment == 0 ? pathSegments[pathSegment] : string.Join("/", potentialPath, pathSegments[pathSegment]);
+                    }
+                    ret.Add(potentialPath);
+                }
+                return ret;
             }
+            else
+            {
+                return new List<string>() { path };
+            }
+        }
 
-            ret = ret.Substring(0, ret.Length - 1);
-            return ret;
+        private void CompleteTemplate(RouteInformation routeInformation)
+        {
+            string completedUrl = string.Empty;
+            foreach(string pathSegment in routeInformation.Template.Split("/"))
+            {
+                string finalPathSegment = string.Empty;
+                if (pathSegment.StartsWith("{") && pathSegment.EndsWith("}") && _routeValues != null && _routeValues.Any())
+                {
+                    string routeDataKey = pathSegment.Replace("{", "").Replace("}", "");
+                    if (!_routeValues.TryGetValue(routeDataKey, out finalPathSegment))
+                        finalPathSegment = pathSegment;
+                }
+                else
+                    finalPathSegment = pathSegment;
+                completedUrl = completedUrl == string.Empty ? finalPathSegment :  string.Join('/', completedUrl, finalPathSegment);
+            }
+            routeInformation.SetTemplate(completedUrl);
         }
 
         private bool ShouldBeActive()
         {
-            var routes = _actionDescriptorCollectionProvider.ActionDescriptors.Items.Where(ad => ad.AttributeRouteInfo != null).Select(ad => new RouteInformation(ad)).ToList();
+            var urls = GetPossibleUrls();
 
-            bool isMatch = false;
-
-            if (FuzzySegmentMatch)
-            {              
-                var matchingRoutes = new List<RouteInformation>();
-                var pathSegments = _contextAccessor.HttpContext.Request.Path.ToString().Substring(1).Split('/');
-                if (pathSegments.Length > 1)
-                {
-                    for (int i = 1; i < pathSegments.Length; i++)
-                    {
-                        matchingRoutes.AddRange(routes.Where(r => r.Template == ConstructUrl(pathSegments, i)).ToList());
-                    }
-                }
-                isMatch =  matchingRoutes.Any(r => r.Area == Area && r.Controller == Controller && r.Action == Action);
-            }
-
-            if (isMatch)
-                return true;
-            else
-            {
-                var route = routes.SingleOrDefault(r => r.Template == _contextAccessor.HttpContext.Request.Path.ToString().Substring(1));
-                return route != null && route.Area == Area && route.Controller == Controller && route.Action == Action;
-            }       
+            var routes = _actionDescriptorCollectionProvider.ActionDescriptors.Items
+                .Where(ad => ad.AttributeRouteInfo != null)
+                .Select(ad => new RouteInformation(ad)).Where(ri => ri.Area.ToLowerInvariant() == Area.ToLowerInvariant() && ri.Controller.ToLowerInvariant() == Controller.ToLowerInvariant() && ri.Action.ToLowerInvariant() == Action.ToLowerInvariant()).ToList();
+            routes.ForEach(CompleteTemplate);
+            return routes.Any(r => urls.Contains(r.Template));    
         }
 
         private void MakeActive(TagHelperOutput output)
@@ -106,14 +134,5 @@ namespace CMCS.Common.WebUtilities.TagHelpers
                 output.Attributes.SetAttribute("class", classAttr.Value == null ? "active" : classAttr.Value.ToString() + " active");
             }
         }
-
-
-
-
-
-
-
-
-
     }
 }
