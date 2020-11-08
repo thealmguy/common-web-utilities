@@ -13,14 +13,6 @@ namespace CMCS.Common.WebUtilities.TagHelpers
     [HtmlTargetElement("a", Attributes = "asp-is-active", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class ActiveRouteTagHelper : TagHelper
     {
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IActionDescriptorCollectionProvider _actionDescriptorCollectionProvider;
-
-        public ActiveRouteTagHelper(IHttpContextAccessor contextAccessor, IActionDescriptorCollectionProvider actionDescriptorCollectionProvider)
-        {
-            _contextAccessor = contextAccessor;
-            _actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
-        }
 
         private IDictionary<string, string> _routeValues;
 
@@ -32,9 +24,6 @@ namespace CMCS.Common.WebUtilities.TagHelpers
 
         [HtmlAttributeName("asp-controller")]
         public string Controller { get; set; }
-
-        [HtmlAttributeName("asp-page")]
-        public string Page { get; set; }
 
         [HtmlAttributeName("asp-all-route-data", DictionaryAttributePrefix = "asp-route-")]
         public IDictionary<string, string> RouteValues
@@ -84,7 +73,7 @@ namespace CMCS.Common.WebUtilities.TagHelpers
 
             if (Controller != null && Area != null)
             {
-                if (!string.IsNullOrWhiteSpace(Area) && Area.ToLower() != currentArea.ToLower())
+                if ((!string.IsNullOrWhiteSpace(Area) || !string.IsNullOrWhiteSpace(currentArea)) && Area.ToLower() != currentArea.ToLower())
                     return false;
                 
                 if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController.ToLower())
@@ -92,12 +81,6 @@ namespace CMCS.Common.WebUtilities.TagHelpers
                 
                 if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction.ToLower())
                     return false;          
-            }
-
-            if (Page != null)
-            {
-                if (!string.IsNullOrWhiteSpace(Page) && Page.ToLower() != _contextAccessor.HttpContext.Request.Path.Value.ToLower())
-                    return false;               
             }
 
             foreach (KeyValuePair<string, string> routeValue in RouteValues)
