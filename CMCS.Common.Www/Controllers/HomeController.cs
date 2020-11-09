@@ -6,16 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CMCS.Common.Www.Models;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using CMCS.Common.WebUtilities.Services;
+using CMCS.Common.WebUtilities.Objects;
+using System.IO;
 
 namespace CMCS.Common.Www.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IActionDescriptorCollectionProvider actionDescriptorCollectionProvider;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IActionDescriptorCollectionProvider actionDescriptorCollectionProvider)
         {
-            _logger = logger;
+            this.actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
         }
 
         [Route("")]
@@ -82,6 +86,21 @@ namespace CMCS.Common.Www.Controllers
         public IActionResult SubSubSubSubcategory(string category, string subCategory, string subSubCategory, string subSubSubCategory, string subSubSubSubCategory)
         {
             return View("Generic", $"{category} > {subCategory} > {subSubCategory} > {subSubSubCategory} > {subSubSubSubCategory}");
+        }
+
+        [Route("sitemap.xml")]
+        public IActionResult Sitemap()
+        {
+            var sitemapSvc = new SitemapService();
+            var urlConfig = new UrlConfig();
+            urlConfig.CanonicalHost = "www.foo.com";
+            var doc = sitemapSvc.GenerateSitemap(actionDescriptorCollectionProvider.ActionDescriptors, urlConfig);
+
+            using (var stream = new MemoryStream())
+            {
+                doc.Save(stream);
+                return File(stream.ToArray(), "text/xml");
+            }
         }
 
         #endregion

@@ -43,6 +43,16 @@ The taghelper gets the current url path from `HttpContext`. If you have selected
 
 It then gets the routes that match this `area`, `controller` and `action`, and compares the calculated url against the previous list. If there is a match, it adds the `active` class.
 
+# Services
+
+## Sitemap Service
+
+### How to use it
+
+Docs coming soon! See sample project (Home controller > sitemap action)
+
+
+
 
 <!-- - Email TagHelper
 
