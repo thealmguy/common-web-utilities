@@ -25,10 +25,7 @@ namespace CMCS.Common.WebUtilities.Testing.TagHelpers
             helper = new ActiveRouteTagHelper();
             helper.Area = "";
             helper.Controller = "Home";
-            helper.Action = "Index";
-            helper.RouteValues = new Dictionary<string, string>();
-            helper.RouteValues.Add("Id", "Foo");
-            helper.RouteValues.Add("Name", "Bar");
+            helper.Action = "Index";            
 
             viewContext = new ViewContext();
             viewContext.RouteData = new RouteData();
@@ -50,6 +47,9 @@ namespace CMCS.Common.WebUtilities.Testing.TagHelpers
         {
 
             //Arrange
+            helper.RouteValues = new Dictionary<string, string>();
+            helper.RouteValues.Add("Id", "Foo");
+            helper.RouteValues.Add("Name", "Bar");
             viewContext.RouteData.Values.Add("Area", "");
             viewContext.RouteData.Values.Add("Controller", "Home");
             viewContext.RouteData.Values.Add("Action", "Index");
@@ -70,10 +70,63 @@ namespace CMCS.Common.WebUtilities.Testing.TagHelpers
         }
 
         [Test]
+        public void AddsActiveClassForMatchingRouteWithClassAlreadyPresent()
+        {
+
+            //Arrange
+            helper.RouteValues = new Dictionary<string, string>();
+            helper.RouteValues.Add("Id", "Foo");
+            helper.RouteValues.Add("Name", "Bar");
+            tagHelperOutput.Attributes.Add(new TagHelperAttribute("class", "foo"));
+            viewContext.RouteData.Values.Add("Area", "");
+            viewContext.RouteData.Values.Add("Controller", "Home");
+            viewContext.RouteData.Values.Add("Action", "Index");
+            viewContext.RouteData.Values.Add("Id", "Foo");
+            viewContext.RouteData.Values.Add("Name", "Bar");
+
+            //Act
+            helper.Process(tagHelperContext, tagHelperOutput);
+
+            //Assert
+            TagHelperAttribute classAttribute = null;
+            tagHelperOutput.Attributes.TryGetAttribute("class", out classAttribute);
+            Assert.AreEqual("foo active", classAttribute.Value);
+
+            TagHelperAttribute aspActiveAttribute = null;
+            tagHelperOutput.Attributes.TryGetAttribute("asp-is-active", out aspActiveAttribute);
+            Assert.IsNull(aspActiveAttribute);
+        }
+
+        [Test]
+        public void AddsActiveClassForMatchingRouteWithNoAdditionalRouteData()
+        {
+
+            //Arrange
+            viewContext.RouteData.Values.Add("Area", "");
+            viewContext.RouteData.Values.Add("Controller", "Home");
+            viewContext.RouteData.Values.Add("Action", "Index");
+
+            //Act
+            helper.Process(tagHelperContext, tagHelperOutput);
+
+            //Assert
+            TagHelperAttribute classAttribute = null;
+            tagHelperOutput.Attributes.TryGetAttribute("class", out classAttribute);
+            Assert.AreEqual("active", classAttribute.Value);
+
+            TagHelperAttribute aspActiveAttribute = null;
+            tagHelperOutput.Attributes.TryGetAttribute("asp-is-active", out aspActiveAttribute);
+            Assert.IsNull(aspActiveAttribute);
+        }
+
+        [Test]
         public void DoesNotAddActiveClassNotMatchingArea()
         {
 
             //Arrange
+            helper.RouteValues = new Dictionary<string, string>();
+            helper.RouteValues.Add("Id", "Foo");
+            helper.RouteValues.Add("Name", "Bar");
             viewContext.RouteData.Values.Add("Area", "Fred");
             viewContext.RouteData.Values.Add("Controller", "Home");
             viewContext.RouteData.Values.Add("Action", "Index");
@@ -94,6 +147,9 @@ namespace CMCS.Common.WebUtilities.Testing.TagHelpers
         {
 
             //Arrange
+            helper.RouteValues = new Dictionary<string, string>();
+            helper.RouteValues.Add("Id", "Foo");
+            helper.RouteValues.Add("Name", "Bar");
             viewContext.RouteData.Values.Add("Area", "");
             viewContext.RouteData.Values.Add("Controller", "Fred");
             viewContext.RouteData.Values.Add("Action", "Index");
@@ -114,6 +170,9 @@ namespace CMCS.Common.WebUtilities.Testing.TagHelpers
         {
 
             //Arrange
+            helper.RouteValues = new Dictionary<string, string>();
+            helper.RouteValues.Add("Id", "Foo");
+            helper.RouteValues.Add("Name", "Bar");
             viewContext.RouteData.Values.Add("Area", "");
             viewContext.RouteData.Values.Add("Controller", "Home");
             viewContext.RouteData.Values.Add("Action", "Fred");
@@ -134,6 +193,9 @@ namespace CMCS.Common.WebUtilities.Testing.TagHelpers
         {
 
             //Arrange
+            helper.RouteValues = new Dictionary<string, string>();
+            helper.RouteValues.Add("Id", "Foo");
+            helper.RouteValues.Add("Name", "Bar");
             viewContext.RouteData.Values.Add("Area", "");
             viewContext.RouteData.Values.Add("Controller", "Home");
             viewContext.RouteData.Values.Add("Action", "Index");
