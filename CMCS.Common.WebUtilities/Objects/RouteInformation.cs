@@ -21,9 +21,9 @@ namespace CMCS.Common.WebUtilities.Objects
         {
             this.Template = routeInfo.AttributeRouteInfo.Template;
             this.Name = routeInfo.AttributeRouteInfo.Name;
-            this.Area = routeInfo.RouteValues.ContainsKey("area") ? routeInfo.RouteValues["area"] : string.Empty;
-            this.Controller = routeInfo.RouteValues["controller"];
-            this.Action = routeInfo.RouteValues["action"];
+            this.Area = routeInfo.RouteValues.ContainsKey("Area") ? routeInfo.RouteValues["Area"] : string.Empty;
+            this.Controller = routeInfo.RouteValues.ContainsKey("Controller") ? routeInfo.RouteValues["Controller"] : string.Empty; ;
+            this.Action = routeInfo.RouteValues.ContainsKey("Action") ? routeInfo.RouteValues["Action"] : string.Empty; ;
 
         }
 

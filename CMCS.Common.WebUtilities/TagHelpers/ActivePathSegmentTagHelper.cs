@@ -52,10 +52,6 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             }
         }
 
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             base.Process(context, output);
@@ -97,10 +93,10 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             foreach(string pathSegment in routeInformation.Template.Split("/"))
             {
                 string finalPathSegment = string.Empty;
-                if (pathSegment.StartsWith("{") && pathSegment.EndsWith("}") && _routeValues != null && _routeValues.Any())
+                if (pathSegment.StartsWith("{") && pathSegment.EndsWith("}") && RouteValues != null && RouteValues.Any())
                 {
                     string routeDataKey = pathSegment.Replace("{", "").Replace("}", "");
-                    if (!_routeValues.TryGetValue(routeDataKey, out finalPathSegment))
+                    if (!RouteValues.TryGetValue(routeDataKey, out finalPathSegment))
                         finalPathSegment = pathSegment;
                 }
                 else
