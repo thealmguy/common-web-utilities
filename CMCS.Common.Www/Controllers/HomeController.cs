@@ -10,16 +10,19 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using CMCS.Common.WebUtilities.Services;
 using CMCS.Common.WebUtilities.Objects;
 using System.IO;
+using Microsoft.Extensions.Options;
 
 namespace CMCS.Common.Www.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IActionDescriptorCollectionProvider actionDescriptorCollectionProvider;
+        private readonly IOptions<UrlConfig> urlConfig;
 
-        public HomeController(IActionDescriptorCollectionProvider actionDescriptorCollectionProvider)
+        public HomeController(IActionDescriptorCollectionProvider actionDescriptorCollectionProvider, IOptions<UrlConfig> urlConfig)
         {
             this.actionDescriptorCollectionProvider = actionDescriptorCollectionProvider;
+            this.urlConfig = urlConfig;
         }
 
         [Route("")]
@@ -92,9 +95,7 @@ namespace CMCS.Common.Www.Controllers
         public IActionResult Sitemap()
         {
             var sitemapSvc = new SitemapService();
-            var urlConfig = new UrlConfig();
-            urlConfig.CanonicalHost = "www.foo.com";
-            var doc = sitemapSvc.GenerateSitemap(actionDescriptorCollectionProvider.ActionDescriptors, urlConfig);
+            var doc = sitemapSvc.GenerateSitemap(actionDescriptorCollectionProvider.ActionDescriptors, urlConfig.Value);
 
             using (var stream = new MemoryStream())
             {

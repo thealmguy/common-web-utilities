@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CMCS.Common.WebUtilities.Objects;
+using CMCS.Common.WebUtilities.RedirectRules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -25,6 +28,7 @@ namespace CMCS.Common.Www
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<UrlConfig>(Configuration.GetSection("UrlConfig"));
             services.AddControllersWithViews();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
@@ -39,10 +43,16 @@ namespace CMCS.Common.Www
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
+            var options = new RewriteOptions();
+            var urlConfig = Configuration.GetSection("").Get<UrlConfig>();
+            options.Add(new RedirectToCanonicalHostRule(Configuration.GetSection("UrlConfig").Get<UrlConfig>()));
+            options.Add(new RedirectToLowerCaseRule());
+            app.UseRewriter(options);
+
             app.UseStaticFiles();
 
             app.UseRouting();

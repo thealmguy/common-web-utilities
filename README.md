@@ -49,10 +49,23 @@ It then gets the routes that match this `area`, `controller` and `action`, and c
 
 ### How to use it
 
-Docs coming soon! See sample project (Home controller > sitemap action)
+Docs coming soon! See sample project `(Home controller > sitemap action)`
 
+# Redirect Rules
 
+## RedirectToCanonicalHost Rule
 
+### How to use it
+
+Docs coming soon! See sample project `(startup.cs)`
+
+# Redirect Rules
+
+## RedirectToLowerCase Rule
+
+### How to use it
+
+Docs coming soon! See sample project `(startup.cs)`
 
 <!-- - Email TagHelper
 
