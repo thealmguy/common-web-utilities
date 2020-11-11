@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
     <PackageId>CMCS.Common.WebUtilities</PackageId>
     <Authors>thealmguy</Authors>
     <Company>CMCS</Company>
     <PackageTags>asp.net core mvc</PackageTags>
     <Description>
       This library provides a set of useful helper classes for use when building asp.net core apps.
+      See the docs for more information: https://github.com/thealmguy/common-web-utilities/blob/main/README.md
     </Description>
     <PackageLicenseUrl>https://github.com/thealmguy/common-web-utilities/blob/main/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/thealmguy/common-web-utilities</PackageProjectUrl>
