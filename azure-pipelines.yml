@@ -19,6 +19,11 @@ stages:
         workspace:
           clean: all
         steps:
+          - task: UseDotNet@2
+            displayName: 'Install .Net 5 SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '5.0.100'
           - task: DotNetCoreCLI@2
             inputs:
               command: build
