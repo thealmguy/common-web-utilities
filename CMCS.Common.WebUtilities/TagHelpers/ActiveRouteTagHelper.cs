@@ -55,7 +55,7 @@ namespace CMCS.Common.WebUtilities.TagHelpers
 
         private bool ShouldBeActive()
         {
-            string currentArea = string.Empty;
+            string? currentArea = null;
             string currentController = string.Empty;
             string currentAction = string.Empty;
 
@@ -68,17 +68,16 @@ namespace CMCS.Common.WebUtilities.TagHelpers
             if (ViewContext.RouteData.Values["Action"] != null)
                 currentAction = ViewContext.RouteData.Values["Action"].ToString();
 
-            if (Controller != null && Area != null)
-            {
-                if ((!string.IsNullOrWhiteSpace(Area) || !string.IsNullOrWhiteSpace(currentArea)) && Area.ToLower() != currentArea.ToLower())
-                    return false;
+            
+            if ((!string.IsNullOrWhiteSpace(Area) || !string.IsNullOrWhiteSpace(currentArea)) && Area?.ToLower() != currentArea?.ToLower())
+                return false;
                 
-                if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController.ToLower())
-                    return false;
+            if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController.ToLower())
+                return false;
                 
-                if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction.ToLower())
-                    return false;          
-            }
+            if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction.ToLower())
+                return false;          
+            
 
             foreach (KeyValuePair<string, string> routeValue in RouteValues)
             {

@@ -110,9 +110,13 @@ namespace CMCS.Common.WebUtilities.TagHelpers
         {
             var urls = GetPossibleUrls();
 
+            if (Area == String.Empty)
+                Area = null;
+
+
             var routes = _actionDescriptorCollectionProvider.ActionDescriptors.Items
                 .Where(ad => ad.AttributeRouteInfo != null)
-                .Select(ad => new RouteInformation(ad)).Where(ri => ri.Area.ToLowerInvariant() == Area.ToLowerInvariant() && ri.Controller.ToLowerInvariant() == Controller.ToLowerInvariant() && ri.Action.ToLowerInvariant() == Action.ToLowerInvariant()).ToList();
+                .Select(ad => new RouteInformation(ad)).Where(ri => (string.IsNullOrEmpty(ri.Area) ? null : ri.Area.ToLowerInvariant()) == Area?.ToLowerInvariant() && ri.Controller.ToLowerInvariant() == Controller.ToLowerInvariant() && ri.Action.ToLowerInvariant() == Action.ToLowerInvariant()).ToList();
             routes.ForEach(CompleteTemplate);
             return routes.Any(r => urls.Contains(r.Template));    
         }
